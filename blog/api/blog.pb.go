@@ -4,10 +4,14 @@
 package blog
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -277,4 +281,156 @@ var fileDescriptor_6745b25902462fb1 = []byte{
 	0x03, 0xac, 0x9a, 0x2e, 0x21, 0x77, 0xba, 0x6f, 0x40, 0xee, 0xe9, 0xa4, 0x9e, 0xdf, 0xdd, 0x48,
 	0x8a, 0x1f, 0xd4, 0x27, 0xe2, 0xf9, 0xa3, 0xc1, 0xcd, 0xbe, 0xe9, 0x27, 0x1e, 0x7e, 0x04, 0x00,
 	0x00, 0xff, 0xff, 0xc8, 0x67, 0xcb, 0xee, 0xaf, 0x02, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// BlogServiceClient is the client API for BlogService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type BlogServiceClient interface {
+	CreatePost(ctx context.Context, in *CreatePostRequest, opts ...grpc.CallOption) (*Post, error)
+	ListPosts(ctx context.Context, in *ListPostsRequest, opts ...grpc.CallOption) (*ListPostsResponse, error)
+	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*Post, error)
+}
+
+type blogServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewBlogServiceClient(cc *grpc.ClientConn) BlogServiceClient {
+	return &blogServiceClient{cc}
+}
+
+func (c *blogServiceClient) CreatePost(ctx context.Context, in *CreatePostRequest, opts ...grpc.CallOption) (*Post, error) {
+	out := new(Post)
+	err := c.cc.Invoke(ctx, "/blog.BlogService/CreatePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *blogServiceClient) ListPosts(ctx context.Context, in *ListPostsRequest, opts ...grpc.CallOption) (*ListPostsResponse, error) {
+	out := new(ListPostsResponse)
+	err := c.cc.Invoke(ctx, "/blog.BlogService/ListPosts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *blogServiceClient) UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*Post, error) {
+	out := new(Post)
+	err := c.cc.Invoke(ctx, "/blog.BlogService/UpdatePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// BlogServiceServer is the server API for BlogService service.
+type BlogServiceServer interface {
+	CreatePost(context.Context, *CreatePostRequest) (*Post, error)
+	ListPosts(context.Context, *ListPostsRequest) (*ListPostsResponse, error)
+	UpdatePost(context.Context, *UpdatePostRequest) (*Post, error)
+}
+
+// UnimplementedBlogServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedBlogServiceServer struct {
+}
+
+func (*UnimplementedBlogServiceServer) CreatePost(ctx context.Context, req *CreatePostRequest) (*Post, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePost not implemented")
+}
+func (*UnimplementedBlogServiceServer) ListPosts(ctx context.Context, req *ListPostsRequest) (*ListPostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPosts not implemented")
+}
+func (*UnimplementedBlogServiceServer) UpdatePost(ctx context.Context, req *UpdatePostRequest) (*Post, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePost not implemented")
+}
+
+func RegisterBlogServiceServer(s *grpc.Server, srv BlogServiceServer) {
+	s.RegisterService(&_BlogService_serviceDesc, srv)
+}
+
+func _BlogService_CreatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServiceServer).CreatePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.BlogService/CreatePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServiceServer).CreatePost(ctx, req.(*CreatePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BlogService_ListPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPostsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServiceServer).ListPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.BlogService/ListPosts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServiceServer).ListPosts(ctx, req.(*ListPostsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BlogService_UpdatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServiceServer).UpdatePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.BlogService/UpdatePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServiceServer).UpdatePost(ctx, req.(*UpdatePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _BlogService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "blog.BlogService",
+	HandlerType: (*BlogServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreatePost",
+			Handler:    _BlogService_CreatePost_Handler,
+		},
+		{
+			MethodName: "ListPosts",
+			Handler:    _BlogService_ListPosts_Handler,
+		},
+		{
+			MethodName: "UpdatePost",
+			Handler:    _BlogService_UpdatePost_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "blog.proto",
 }
