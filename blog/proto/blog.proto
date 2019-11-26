@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package blog;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+service BlogService {
+  rpc CreatePost (Post) returns (Post) {
+    option (google.api.http) = {
+      post: "/api/v1/posts",
+      body: "*"
+    };
+  }
+
+  rpc ListPosts(ListPostsRequest) returns (stream Post) {
+    option (google.api.http) = {
+      get: "/api/v1/posts",
+    };
+  }
+
+  rpc UpdatePost (UpdatePostRequest) returns (Post) {
+    option (google.api.http) = {
+      post: "/api/v1/posts/${post.id}",
+      body: "*"
+    };
+  }
+}
+
+message Post {
+  string title = 1;
+  string body = 2;
+  repeated string tags = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp published_at = 5;
+}
+
+message ListPostsRequest {
+}
+
+message UpdatePostRequest {
+  Post post = 1;
+}
