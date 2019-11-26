@@ -6,36 +6,44 @@ import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
 service BlogService {
-  rpc CreatePost (Post) returns (Post) {
+  rpc CreatePost(CreatePostRequest) returns (Post) {
     option (google.api.http) = {
       post: "/api/v1/posts",
-      body: "*"
+      body: "post"
     };
   }
 
-  rpc ListPosts(ListPostsRequest) returns (stream Post) {
+  rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {
     option (google.api.http) = {
       get: "/api/v1/posts",
     };
   }
 
-  rpc UpdatePost (UpdatePostRequest) returns (Post) {
+  rpc UpdatePost(UpdatePostRequest) returns (Post) {
     option (google.api.http) = {
-      post: "/api/v1/posts/{post.id}",
-      body: "*"
+      put: "/api/v1/posts/{post.id}",
+      body: "post"
     };
   }
 }
 
 message Post {
-  string title = 1;
-  string body = 2;
-  repeated string tags = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp published_at = 5;
+  int32 id = 1;
+  string title = 2;
+  string body = 3;
+  repeated string tags = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message CreatePostRequest {
+  Post post = 1;
 }
 
 message ListPostsRequest {
+}
+
+message ListPostsResponse {
+  repeated Post posts = 1;
 }
 
 message UpdatePostRequest {
