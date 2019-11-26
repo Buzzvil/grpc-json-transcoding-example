@@ -21,7 +21,7 @@ service BlogService {
 
   rpc UpdatePost (UpdatePostRequest) returns (Post) {
     option (google.api.http) = {
-      post: "/api/v1/posts/${post.id}",
+      post: "/api/v1/posts/{post.id}",
       body: "*"
     };
   }
