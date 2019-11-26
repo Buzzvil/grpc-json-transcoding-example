@@ -1,14 +1,13 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net"
 	"os"
 
-	// "github.com/Buzzvil/appaccountsvc/internal/app/accountsrv"
-	// pb "github.com/Buzzvil/buzzapis/go/appaccount"
+	pb "github.com/Buzzvil/grpc-json-transcoding-example/blog/api"
+	"github.com/Buzzvil/grpc-json-transcoding-example/blog/pkg/blogsrv"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -23,11 +22,9 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	var db *sql.DB
-	db, err = sql.Open("sqlite3", "file:db/blog.db")
-
 	s := newGrpcServer()
-	// Register grpc server
+	blogServer := blogsrv.New()
+	pb.RegisterBlogServiceServer(s, blogServer)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
