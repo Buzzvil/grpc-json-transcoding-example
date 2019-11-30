@@ -1,18 +1,34 @@
+default: build
 
+help:
+	@echo 'Usage:'
+	@echo '    make build           Build docker image.'
+	@echo '    make up              Start the service.'
+	@echo '    make down 			Stop the service.'
+	@echo '    make descriptor      Print base64 encoded proto descriptor'
+	@echo
 
-image:
+build: api/blog.pb.go
 	docker build -t blogsvc .
 
-proto: api/blog.pb.go
+up:
+	kubectl apply -f deployment
 
-descriptor: build/blog.pb
-	cat build/blog.pb | openssl base64 -A
+down:
+	kubectl delete -f deployment
+
+descriptor: tmp/blog.pb
+	cat tmp/blog.pb | openssl base64 -A
 
 api/blog.pb.go:
 	protoc -I./proto --go_out=plugins=grpc:./api ./proto/blog.proto
 
-build:
-	mkdir -p build
+tmp:
+	mkdir -p tmp
 
-build/blog.pb: build
-	protoc -I./proto --include_imports --include_source_info --descriptor_set_out=build/blog.pb blog.proto
+tmp/blog.pb: tmp
+	protoc -I./proto --include_imports --include_source_info --descriptor_set_out=tmp/blog.pb blog.proto
+
+clean:
+	rm -rf tmp
+	docker image rm blogsvc
