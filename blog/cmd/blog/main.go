@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
+	log.Println("Starting the server..")
 
 	s := newGrpcServer()
 	blogServer := blogsrv.New()
